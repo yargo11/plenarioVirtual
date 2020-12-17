@@ -103,3 +103,12 @@ export const Colegio = styled.div`
     transform: translateX(10px);
   }
 `;
+
+export const Resultados = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  background: #f8f7f7;
+  height: 56px;
+  width: 100%;
+`;

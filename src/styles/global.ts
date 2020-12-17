@@ -9,7 +9,7 @@ box-sizing: border-box
 }
 
 body{
-  background:#a3a3a3;
+  background:#ebedee;;
   -webkit-font-smoothing:antialiased;
   }
 
