@@ -16,6 +16,9 @@ body{
 body, input, button{
   font:16px Roboto, sans-serif;
 }
+button{
+  cursor: pointer;
+}
 
 #root{
 background:#ebedee;
