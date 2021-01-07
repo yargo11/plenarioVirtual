@@ -21,16 +21,13 @@ const Sessao: React.FC = () => {
         <div>
           <div>
             <h3>Abertura da sessão</h3>
-            <h3>16/12/2020 8:00</h3>
-          </div>
-
-          <div>
             <h3>Fechamento da sessão</h3>
-            <h3>Não informado</h3>
+            <h3>Tipo de sessão</h3>
           </div>
 
           <div>
-            <h3>Tipo de sessão</h3>
+            <h3>16/12/2020 8:00</h3>
+            <h3>Não informado</h3>
             <h3>ORDINÁRIA</h3>
           </div>
         </div>

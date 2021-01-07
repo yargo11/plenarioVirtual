@@ -4,6 +4,7 @@ export const Breadcrumb = styled.div`
   background: #637b80;
   color: #fff;
   height: 30px;
+  padding: 5px;
 
   p {
     max-width: 1140px;

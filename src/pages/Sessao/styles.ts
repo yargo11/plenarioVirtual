@@ -4,6 +4,7 @@ export const Breadcrumb = styled.div`
   background: #637b80;
   color: #fff;
   height: 30px;
+  padding: 5px;
 
   p {
     max-width: 1140px;
@@ -20,12 +21,15 @@ export const Colegiado = styled.div`
 
   div {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     max-width: 400px;
+    justify-content: space-between;
 
     div {
-      flex-direction: row;
-      justify-content: space-between;
+      flex-direction: column;
+      h3 {
+        margin: 5px 0px;
+      }
     }
   }
 `;

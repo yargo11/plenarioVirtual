@@ -5,6 +5,7 @@ export const HHeader = styled.div`
   display: flex;
   flex-direction: column;
   background: #2f6772;
+  padding: 5px;
 
   div {
     /* max-width: 1140px;
@@ -41,6 +42,7 @@ export const Plenario = styled.div`
   }
   img {
     margin: 20px 0px;
+    /* width: 100%; */
   }
   p {
     max-width: 700px;

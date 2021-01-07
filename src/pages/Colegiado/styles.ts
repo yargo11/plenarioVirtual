@@ -4,6 +4,7 @@ export const Breadcrumb = styled.div`
   background: #637b80;
   color: #fff;
   height: 30px;
+  padding: 5px;
 
   p {
     max-width: 1140px;
@@ -78,4 +79,54 @@ export const Resultados = styled.div`
   margin: 30px auto;
   padding: 20px;
   color: #2f6772;
+`;
+
+export const Sessao = styled.div`
+  background: #f8f7f7;
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+
+  margin: 10px 0px;
+
+  border-left: 5px solid #2f6772;
+  box-shadow: 0 1px 1px 0 rgba(74, 74, 74, 0.15),
+    0 1px 2px 1px rgba(74, 74, 74, 0.15);
+
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: translateX(10px);
+  }
+
+  div {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    svg {
+      margin-left: auto;
+    }
+
+    & + div {
+      flex: 1;
+    }
+  }
+
+  span {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    svg:nth-child(1) {
+      margin-left: 0px;
+      margin-right: 5px;
+    }
+  }
+
+  p,
+  span {
+    margin: 5px 0px;
+  }
 `;
