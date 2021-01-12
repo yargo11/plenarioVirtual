@@ -1,10 +1,42 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRouteMatch, Link } from 'react-router-dom';
+import api from '../../services/api';
 
 import Header from '../../components/Header';
 
 import { Breadcrumb, Colegiado, Table, TD } from './styles';
 
+interface IProcesso {
+  nr_processo: string;
+  ds_classe_judicial: string;
+  ds_orgao_julgador_relator: string;
+  situacao_julgamento: string;
+}
+
+interface IParams {
+  id_sessao: string;
+}
+
 const Sessao: React.FC = () => {
+  const [colegiados, setColegiados] = useState<IProcesso[]>([]);
+  const params = useRouteMatch<IParams>();
+
+  useEffect(() => {
+    loadColegiados();
+  }, []);
+
+  const loadColegiados = async () => {
+    const response = await api.get(
+      `/sessoes/${params.id_sessao}/processos/?page=1&perPage=2000`,
+    );
+
+    setColegiados(response.data.data);
+  };
+
+  // colegiados.sort((a, b) =>
+  //   a.id_orgao_julgador_colegiado > b.id_orgao_julgador_colegiado ? 1 : -1,
+  // );
+
   return (
     <>
       <Header />

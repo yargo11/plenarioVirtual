@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { FiChevronRight } from 'react-icons/fi';
 import api from '../../services/api';
 
@@ -41,13 +42,16 @@ const Home: React.FC = () => {
         <hr />
         {colegiados
           .map(colegio => (
-            <a key={colegio.id_orgao_julgador_colegiado} href="teste">
+            <Link
+              key={colegio.id_orgao_julgador_colegiado}
+              to={`/colegiados/${colegio.id_orgao_julgador_colegiado}`}
+            >
               <Colegio>
                 <h3>{colegio.ds_orgao_julgador_colegiado}</h3>
 
                 <FiChevronRight size={20} />
               </Colegio>
-            </a>
+            </Link>
           ))
           .sort()}
 
