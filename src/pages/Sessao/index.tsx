@@ -7,19 +7,21 @@ import Header from '../../components/Header';
 import { Breadcrumb, Colegiado, Table, TD } from './styles';
 
 interface IProcesso {
+  id_sessao_pauta_processo_trf: string;
   nr_processo: string;
   ds_classe_judicial: string;
   ds_orgao_julgador_relator: string;
   situacao_julgamento: string;
+  nr_ordem: number;
 }
 
 interface IParams {
-  id_sessao: string;
+  idSessao: string;
 }
 
 const Sessao: React.FC = () => {
   const [colegiados, setColegiados] = useState<IProcesso[]>([]);
-  const params = useRouteMatch<IParams>();
+  const { params } = useRouteMatch<IParams>();
 
   useEffect(() => {
     loadColegiados();
@@ -27,7 +29,7 @@ const Sessao: React.FC = () => {
 
   const loadColegiados = async () => {
     const response = await api.get(
-      `/sessoes/${params.id_sessao}/processos/?page=1&perPage=2000`,
+      `/sessoes/${params.idSessao}/processos/?page=1&perPage=2000`,
     );
 
     setColegiados(response.data.data);
@@ -74,33 +76,17 @@ const Sessao: React.FC = () => {
             <th>Relator</th>
             <th>Situação</th>
           </tr>
-          <tr>
-            <TD>1</TD>
-            <TD>MANDADO DE SEGURANÇA CÍVEL</TD>
-            <TD>0805546-73.2020.8.20.0000</TD>
-            <TD>
-              Gab. Des. Claudio Santos no Pleno - Juíz(a) convocado(a) Dra.
-              Berenice Capuxu
-            </TD>
-            <TD>REGULAR</TD>
-          </tr>
-          <tr>
-            <TD>1</TD>
-            <TD>MANDADO DE SEGURANÇA CÍVEL</TD>
-            <TD>0805546-73.2020.8.20.0000</TD>
-            <TD>
-              Gab. Des. Claudio Santos no Pleno - Juíz(a) convocado(a) Dra.
-              Berenice Capuxu
-            </TD>
-            <TD>REGULAR</TD>
-          </tr>
-          <tr>
-            <TD>1</TD>
-            <TD>MANDADO DE SEGURANÇA CÍVEL</TD>
-            <TD>0805546-73.2020.8.20.0000</TD>
-            <TD>Gab. Des. Vivaldo Pinheiro no Pleno</TD>
-            <TD>REGULAR</TD>
-          </tr>
+          {colegiados.map(processo => (
+            <Link key={processo.id_sessao_pauta_processo_trf} to="/processo">
+              <tr>
+                <TD>{processo.nr_ordem}</TD>
+                <TD>{processo.ds_classe_judicial}</TD>
+                <TD>{processo.nr_processo}</TD>
+                <TD>{processo.ds_orgao_julgador_relator}</TD>
+                <TD>{processo.situacao_julgamento}</TD>
+              </tr>
+            </Link>
+          ))}
         </Table>
       </Colegiado>
     </>

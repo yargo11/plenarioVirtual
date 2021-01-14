@@ -18,6 +18,11 @@ export const ColegiadoC = styled.div`
   margin: 30px auto;
   padding: 20px;
   color: #2f6772;
+
+  a {
+    text-decoration: none;
+    color: #2f6772;
+  }
 `;
 
 export const Colegio = styled.div`
@@ -63,6 +68,7 @@ export const Colegio = styled.div`
   }
 
   button {
+    display: block;
     color: #fff;
     background-color: #2f6772;
     border-color: #2f6772;

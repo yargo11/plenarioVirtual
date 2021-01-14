@@ -14,6 +14,7 @@ interface Colegiado {
 
 const Home: React.FC = () => {
   const [colegiados, setColegiados] = useState<Colegiado[]>([]);
+  const year = new Date().getFullYear();
 
   useEffect(() => {
     loadColegiados();
@@ -44,7 +45,7 @@ const Home: React.FC = () => {
           .map(colegio => (
             <Link
               key={colegio.id_orgao_julgador_colegiado}
-              to={`/colegiados/${colegio.id_orgao_julgador_colegiado}`}
+              to={`/colegiados/${colegio.id_orgao_julgador_colegiado}/${year}`}
             >
               <Colegio>
                 <h3>{colegio.ds_orgao_julgador_colegiado}</h3>

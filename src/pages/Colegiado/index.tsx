@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FormEvent } from 'react';
 import { Link, useRouteMatch } from 'react-router-dom';
 import { parseISO, format } from 'date-fns';
 import { FiEdit, FiChevronRight, FiClock } from 'react-icons/fi';
@@ -19,12 +19,13 @@ interface IColegiados {
 
 interface IParams {
   id: string;
+  year: string;
 }
 
 const Colegiado: React.FC = () => {
   const [colegiados, setColegiados] = useState<IColegiados[]>([]);
+  const [selValue, setSelValue] = useState('');
   const { params } = useRouteMatch<IParams>();
-  const year = new Date().getFullYear();
 
   useEffect(() => {
     loadColegiados();
@@ -32,11 +33,20 @@ const Colegiado: React.FC = () => {
 
   const loadColegiados = async () => {
     const response = await api.get(
-      `/orgaos-julgadores-colegiados/${params.id}/sessoes?ano=${year}`,
+      `/orgaos-julgadores-colegiados/${params.id}/sessoes?ano=${params.year}`,
     );
 
     setColegiados(response.data.data.data);
   };
+
+  async function changeYear(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const response = await api.get(
+      `/orgaos-julgadores-colegiados/${params.id}/sessoes?ano=${selValue}`,
+    );
+
+    setColegiados(response.data.data.data);
+  }
 
   colegiados.sort((a, b) => (a.id_sessao > b.id_sessao ? -1 : 1));
 
@@ -61,7 +71,10 @@ const Colegiado: React.FC = () => {
             </div>
             <div>
               <h4>Ano da Sessão</h4>
-              <select>
+              <select
+                value={selValue}
+                onChange={e => setSelValue(e.target.value)}
+              >
                 <option>2021</option>
                 <option>2020</option>
                 <option>2019</option>
@@ -71,7 +84,9 @@ const Colegiado: React.FC = () => {
             </div>
           </div>
           <hr />
-          <button type="submit">Filtrar</button>
+          <form onSubmit={changeYear}>
+            <button type="submit">Filtrar</button>
+          </form>
         </Colegio>
 
         <Resultados>
@@ -82,8 +97,8 @@ const Colegiado: React.FC = () => {
 
         {colegiados
           .map(colegios => (
-            <Link to={`/sessao/${colegios.id_sessao}`}>
-              <Sessao key={colegios.id_sessao}>
+            <Link key={colegios.id_sessao} to={`/sessao/${colegios.id_sessao}`}>
+              <Sessao>
                 <div>
                   <h2>{format(parseISO(colegios.dt_sessao), 'dd/MM/yyyy')}</h2>
                 </div>

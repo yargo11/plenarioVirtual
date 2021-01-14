@@ -8,8 +8,8 @@ import Processo from '../pages/Processo';
 const Routes: React.FC = () => (
   <Switch>
     <Route path="/" exact component={Home} />
-    <Route path="/colegiados/:id+" component={Colegiado} />
-    <Route path="/sessao/:id_sessao+" component={Sessao} />
+    <Route path="/colegiados/:id/:year+" component={Colegiado} />
+    <Route path="/sessao/:idSessao+" component={Sessao} />
     <Route path="/processo" component={Processo} />
   </Switch>
 );

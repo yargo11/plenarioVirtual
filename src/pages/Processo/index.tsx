@@ -1,10 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouteMatch } from 'react-router-dom';
+import api from '../../services/api';
 
 import Header from '../../components/Header';
 
 import { Breadcrumb, Colegiado, Informacoes, Card, Cards } from './styles';
 
+interface IProcesso {
+  voto: string;
+  ds_orgao_julgador: string;
+}
+
+interface IParams {
+  processo: string;
+  sessao: string;
+}
+
 const Processo: React.FC = () => {
+  const [processo, setProcesso] = useState<IProcesso[]>([]);
+  const { params } = useRouteMatch<IParams>();
+
+  useEffect(() => {
+    loadProcesso();
+  }, []);
+
+  const loadProcesso = async () => {
+    const response = await api.get(`/sessoes/1642/placar/144690/`);
+
+    setProcesso(response.data);
+
+    console.log(typeof processo);
+    console.log(processo);
+  };
+
   return (
     <>
       <Header />
