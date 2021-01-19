@@ -9,6 +9,7 @@ import { Breadcrumb, Colegiado, Informacoes, Card, Cards } from './styles';
 interface IProcesso {
   voto: string;
   ds_orgao_julgador: string;
+  id_orgao_julgador: string;
 }
 
 interface IParams {
@@ -17,6 +18,11 @@ interface IParams {
 }
 
 const Processo: React.FC = () => {
+  // const [processo, setProcesso] = useState<IProcesso>({
+  //   voto: '',
+  //   ds_orgao_julgador: '',
+  // });
+
   const [processo, setProcesso] = useState<IProcesso[]>([]);
   const { params } = useRouteMatch<IParams>();
 
@@ -44,11 +50,11 @@ const Processo: React.FC = () => {
         <h2>Informações da sessão</h2>
         <Informacoes>
           <div>
-            <p>Abertura da sessão</p>
+            <p>Abertura da sessão.</p>
             <p>16/12/2020 8:00</p>
           </div>
           <div>
-            <p>Fechamento da sessão</p>
+            <p>Fechamento da essão</p>
             <p>Tipo de sessão</p>
           </div>
           <div>
@@ -106,68 +112,39 @@ const Processo: React.FC = () => {
         <h2>Placar</h2>
         <h4>Ordem Concedida (1)</h4>
         <Cards>
-          <Card>
-            Gab. Des. Claudio Santos no Pleno - Juíz(a) convocado(a) Dra.
-            Berenice Capuxu
-          </Card>
+          {processo
+            .filter(process => process.voto === 'Ordem concedida')
+            .map(processos => (
+              <Card key={processos.id_orgao_julgador}>
+                {processos.ds_orgao_julgador}
+              </Card>
+            ))}
         </Cards>
         <h4>Acompanha o relator (10)</h4>
         <Cards>
-          <Card>
-            Gab. Des. Claudio Santos no Pleno - Juíz(a) convocado(a) Dra.
-            Berenice Capuxu
-          </Card>
-          <Card>
-            Gab. Des. Claudio Santos no Pleno - Juíz(a) convocado(a) Dra.
-            Berenice Capuxu
-          </Card>
-          <Card>
-            Gab. Des. Claudio Santos no Pleno - Juíz(a) convocado(a) Dra.
-            Berenice Capuxu
-          </Card>
-          <Card>
-            Gab. Des. Claudio Santos no Pleno - Juíz(a) convocado(a) Dra.
-            Berenice Capuxu
-          </Card>
-          <Card>
-            Gab. Des. Claudio Santos no Pleno - Juíz(a) convocado(a) Dra.
-            Berenice Capuxu
-          </Card>
-          <Card>
-            Gab. Des. Claudio Santos no Pleno - Juíz(a) convocado(a) Dra.
-            Berenice Capuxu
-          </Card>
-          <Card>
-            Gab. Des. Claudio Santos no Pleno - Juíz(a) convocado(a) Dra.
-            Berenice Capuxu
-          </Card>
-          <Card>
-            Gab. Des. Claudio Santos no Pleno - Juíz(a) convocado(a) Dra.
-            Berenice Capuxu
-          </Card>
-          <Card>
-            Gab. Des. Claudio Santos no Pleno - Juíz(a) convocado(a) Dra.
-            Berenice Capuxu
-          </Card>
-          <Card>
-            Gab. Des. Claudio Santos no Pleno - Juíz(a) convocado(a) Dra.
-            Berenice Capuxu
-          </Card>
+          {processo
+            .filter(process => process.voto === 'Acompanha o relator')
+            .map(processos => (
+              <Card key={processos.id_orgao_julgador}>
+                {processos.ds_orgao_julgador}
+              </Card>
+            ))}
         </Cards>
         <h4>Não proferido</h4>
         <Cards>
-          <Card>
-            Gab. Des. Claudio Santos no Pleno - Juíz(a) convocado(a) Dra.
-            Berenice Capuxu
-          </Card>
-          <Card>
-            Gab. Des. Claudio Santos no Pleno - Juíz(a) convocado(a) Dra.
-            Berenice Capuxu
-          </Card>
-          <Card>
-            Gab. Des. Claudio Santos no Pleno - Juíz(a) convocado(a) Dra.
-            Berenice Capuxu
-          </Card>
+          {processo
+            .filter(
+              process =>
+                process.voto === 'Não proferido' &&
+                process.ds_orgao_julgador !== 'Gab. da Presidência no Pleno' &&
+                process.ds_orgao_julgador !==
+                  'Gab. da Vice-Presidência no Pleno',
+            )
+            .map(processos => (
+              <Card key={processos.id_orgao_julgador}>
+                {processos.ds_orgao_julgador}
+              </Card>
+            ))}
         </Cards>
       </Colegiado>
     </>

@@ -33,7 +33,7 @@ const Colegiado: React.FC = () => {
 
   const loadColegiados = async () => {
     const response = await api.get(
-      `/orgaos-julgadores-colegiados/${params.id}/sessoes?ano=${params.year}`,
+      `/orgaos-julgadores-colegiados/${params.id}/sessoes?ano=${params.year}&perPage=2000&page=1`,
     );
 
     setColegiados(response.data.data.data);
