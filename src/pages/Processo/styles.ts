@@ -29,7 +29,26 @@ export const Colegiado = styled.div`
   }
 `;
 
-export const Informacoes = styled.div`
+export const Informacoes1 = styled.div`
+  display: grid;
+  flex-direction: column;
+
+  div {
+    display: flex;
+    flex-direction: row;
+    max-width: 400px;
+    justify-content: space-between;
+
+    div {
+      flex-direction: column;
+      h3 {
+        margin: 5px 0px;
+      }
+    }
+  }
+`;
+
+export const Informacoes2 = styled.div`
   display: grid;
   flex-direction: column;
 

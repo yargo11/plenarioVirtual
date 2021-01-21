@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouteMatch, Link } from 'react-router-dom';
+import { parseISO, format } from 'date-fns';
 import api from '../../services/api';
 
 import Header from '../../components/Header';
@@ -13,16 +14,20 @@ interface ISessao {
   ds_orgao_julgador_relator: string;
   situacao_julgamento: string;
   nr_ordem: number;
+  id_processo_trf: string;
+  id_sessao: string;
 }
 
 interface IColegiados {
   ds_orgao_julgador_colegiado: string;
   ds_tipo_sessao: string;
   dt_sessao: string;
-  nr_horario_inicio: string;
+  nr_hora_inicial: string;
   nr_hora_final: string;
   id_sessao: number;
   id_orgao_julgador_colegiado: number;
+  dt_abertura_sessao: string;
+  dt_realizacao_sessao: string;
 }
 
 interface IParams {
@@ -48,11 +53,9 @@ const Sessao: React.FC = () => {
   };
 
   const loadColegiados = async () => {
-    const response = await api.get(`/sessoes/1644`);
+    const response = await api.get(`/sessoes/${params.idSessao}`);
 
     setColegiados(response.data.data);
-
-    console.log(colegiados);
   };
 
   // colegiados.sort((a, b) =>
@@ -82,10 +85,18 @@ const Sessao: React.FC = () => {
               </div>
               <div>
                 <h3>
-                  {sessao.dt_sessao}
-                  {sessao.nr_horario_inicio}
+                  {format(parseISO(sessao.dt_sessao), 'dd/MM/yyyy')}{' '}
+                  {sessao.nr_hora_inicial}
                 </h3>
-                <h3>Não informado</h3>
+                <h3>
+                  {`${sessao.dt_realizacao_sessao}` === 'null'
+                    ? 'Não Informado'
+                    : `${format(
+                        parseISO(sessao.dt_realizacao_sessao),
+                        'dd/MM/yyyy',
+                      )}`}{' '}
+                  {sessao.nr_hora_final}
+                </h3>
                 <h3>{sessao.ds_tipo_sessao}</h3>
               </div>
             </>
@@ -103,7 +114,10 @@ const Sessao: React.FC = () => {
             <th>Situação</th>
           </tr>
           {sessoes.map(sessao => (
-            <Link key={sessao.id_sessao_pauta_processo_trf} to="/processo">
+            <Link
+              key={sessao.id_sessao_pauta_processo_trf}
+              to={`/processo/${sessao.id_sessao}/${sessao.id_processo_trf}`}
+            >
               <tr>
                 <TD>{sessao.nr_ordem}</TD>
                 <TD>{sessao.ds_classe_judicial}</TD>
