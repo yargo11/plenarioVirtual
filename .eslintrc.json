@@ -25,6 +25,7 @@
     "prettier"
   ],
   "rules": {
+
     "react/jsx-one-expression-per-line":"off",
     "import/extensions": [
       "error",

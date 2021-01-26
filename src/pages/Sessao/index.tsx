@@ -95,7 +95,7 @@ const Sessao: React.FC = () => {
                         parseISO(sessao.dt_realizacao_sessao),
                         'dd/MM/yyyy',
                       )}`}{' '}
-                  {sessao.nr_hora_final}
+                  {/* {sessao.nr_hora_final} */}
                 </h3>
                 <h3>{sessao.ds_tipo_sessao}</h3>
               </div>

@@ -47,17 +47,41 @@ interface IProcesso {
   };
 }
 
+interface ISessao {
+  id_processo_trf: number;
+  nr_ordem: number;
+  situacao_julgamento: string;
+  nr_processo: string;
+  ds_orgao_julgador_relator: string;
+  ds_orgao_julgador_vencedor: string;
+  ds_classe_judicial: string;
+  ds_proclamacao_decisao: string;
+  // assunto: IProcesso;
+}
+
 const Processo: React.FC = () => {
   const [colegiados, setColegiados] = useState<IColegiados[]>([]);
   const [processo, setProcesso] = useState<IProcesso[]>([]);
   const [placar, setPlacar] = useState<IPlacar[]>([]);
+  const [sessoes, setSessao] = useState<ISessao[]>([]);
   const { params } = useRouteMatch<IParams>();
 
   useEffect(() => {
     loadPlacar();
     loadColegiados();
     loadProcesso();
+    loadSessao();
   }, []);
+
+  const loadSessao = async () => {
+    const response = await api.get(
+      `/sessoes/${params.sessao}/processos/?page=1&perPage=2000`,
+    );
+
+    setSessao(response.data.data);
+  };
+
+  // console.log(sessoes);
 
   const loadPlacar = async () => {
     const response = await api.get(
@@ -66,6 +90,25 @@ const Processo: React.FC = () => {
 
     setPlacar(response.data);
   };
+
+  const typeVotos = placar.map(placa => {
+    return placa.voto;
+  });
+
+  const includesRelator = typeVotos.includes('Acompanha o relator');
+  const includesOrdemConcedida = typeVotos.includes('Ordem concedida');
+  const includesImpedido = typeVotos.includes('Impedido');
+  const includesAcaoJulgadaProcedente = typeVotos.includes(
+    'Ação julgada procedente',
+  );
+  const includesAcaoJulgadaImprocedente = typeVotos.includes(
+    'Ação julgada improcedente',
+  );
+  const includesNaoProferido = typeVotos.includes('Não proferido');
+  const includesNaoProvido = typeVotos.includes('Não provido');
+  const includesOutros = typeVotos.includes('Outros');
+
+  // console.log(typeVotos);
 
   const loadColegiados = async () => {
     const response = await api.get(`/sessoes/${params.sessao}`);
@@ -83,7 +126,7 @@ const Processo: React.FC = () => {
     <>
       <Header />
       <Breadcrumb>
-        <p>Hello Migalas</p>
+        <p>Hello Migalhas</p>
       </Breadcrumb>
       <Colegiado>
         <h1>Tribunal Pleno</h1>
@@ -118,55 +161,50 @@ const Processo: React.FC = () => {
           </div>
         </Informacoes1>
         <h2>Informações do Processo</h2>
-        <Informacoes2>
-          <div>
-            <p>Ordem</p>
-            <p>1</p>
-          </div>
-          <div>
-            <p>Situação</p>
-            <p>Julgado</p>
-          </div>
-          <div>
-            <p>Consulta pública do processo</p>
-            <p>0805546-73.2020.8.20.0000</p>
-          </div>
-          <div>
-            <p>Relator</p>
-            <p>
-              Gab. Des. Claudio Santos no Pleno - Juíz(a) convocado(a) Dra.
-              Berenice Capuxu
-            </p>
-          </div>
-          <div>
-            <p>Voto vencedor</p>
-            <p>
-              Gab. Des. Claudio Santos no Pleno - Juíz(a) convocado(a) Dra.
-              Berenice Capuxu
-            </p>
-          </div>
-          <div>
-            <p>Classe judicial</p>
-            <p>MANDADO DE SEGURANÇA CÍVEL</p>
-          </div>
-          <div>
-            <p>Assunto</p>
-            <p>Militar</p>
-          </div>
-          <div>
-            <p>Proclamação do resultado</p>
-            <p>
-              O Tribunal, à unanimidade, em consonância com o parecer da 7ª
-              Procuradoria de Justiça, concedeu a segurança, ficando prejudicado
-              o exame do agravo interno, nos termos do voto do Relator. Foi lido
-              o acórdão e aprovado.
-            </p>
-          </div>
-        </Informacoes2>
+        {sessoes
+          .filter(sessao => sessao.id_processo_trf === 76127)
+          .map(sessao => (
+            <Informacoes2 key={sessao.id_processo_trf}>
+              <div>
+                <p>Ordem</p>
+                <p>{sessao.nr_ordem}</p>
+              </div>
+              <div>
+                <p>Situação</p>
+                <p>{sessao.situacao_julgamento}</p>
+              </div>
+              <div>
+                <p>Consulta pública do processo</p>
+                <p>{sessao.nr_processo}</p>
+              </div>
+              <div>
+                <p>Relator</p>
+                <p>{sessao.ds_orgao_julgador_relator}</p>
+              </div>
+              <div>
+                <p>Voto vencedor</p>
+                <p>{sessao.ds_orgao_julgador_vencedor}</p>
+              </div>
+              <div>
+                <p>Classe judicial</p>
+                <p>{sessao.ds_classe_judicial}</p>
+              </div>
+              <div>
+                <p>Assunto</p>
+
+                <p>sadadas</p>
+              </div>
+              <div>
+                <p>Proclamação do resultado</p>
+                <p>{sessao.ds_proclamacao_decisao}</p>
+              </div>
+            </Informacoes2>
+          ))}
 
         <h2>Placar</h2>
 
-        <h4>Ordem Concedida (1)</h4>
+        {includesOrdemConcedida ? <h4>Ordem Concedida (1)</h4> : <p />}
+
         <Cards>
           {placar
             .filter(votos => votos.voto === 'Ordem concedida')
@@ -176,22 +214,109 @@ const Processo: React.FC = () => {
               </Card>
             ))}
         </Cards>
-        <h4>Acompanha o relator (10)</h4>
+
+        {includesAcaoJulgadaProcedente ? (
+          <h4>Ação julgada procedente</h4>
+        ) : (
+          <p />
+        )}
+
         <Cards>
           {placar
-            .filter(votos => votos.voto === 'Acompanha o relator')
+            .filter(votos => votos.voto === 'Ação julgada procedente')
             .map(votos => (
               <Card key={votos.id_orgao_julgador}>
                 {votos.ds_orgao_julgador}
               </Card>
             ))}
         </Cards>
-        <h4>Não proferido</h4>
+
+        {includesAcaoJulgadaImprocedente ? (
+          <h4>Ação julgada procedente</h4>
+        ) : (
+          <p />
+        )}
+
+        <Cards>
+          {placar
+            .filter(votos => votos.voto === 'Ação julgada improcedente')
+            .map(votos => (
+              <Card key={votos.id_orgao_julgador}>
+                {votos.ds_orgao_julgador}
+              </Card>
+            ))}
+        </Cards>
+
+        {includesRelator ? <h4>Acompanha o relator</h4> : <p />}
+        <Cards>
+          {placar
+            .filter(
+              votos =>
+                votos.voto === 'Acompanha o relator' &&
+                votos.ds_orgao_julgador !== 'Gab. da Presidência no Pleno' &&
+                votos.ds_orgao_julgador !== 'Gab. da Vice-Presidência no Pleno',
+            )
+            .map(votos => (
+              <Card key={votos.id_orgao_julgador}>
+                {votos.ds_orgao_julgador}
+              </Card>
+            ))}
+        </Cards>
+
+        {includesImpedido ? <h4>Impedido</h4> : <p />}
+
+        <Cards>
+          {placar
+            .filter(
+              votos =>
+                votos.voto === 'Impedido' &&
+                votos.ds_orgao_julgador !== 'Gab. da Presidência no Pleno' &&
+                votos.ds_orgao_julgador !== 'Gab. da Vice-Presidência no Pleno',
+            )
+            .map(votos => (
+              <Card key={votos.id_orgao_julgador}>
+                {votos.ds_orgao_julgador}
+              </Card>
+            ))}
+        </Cards>
+        {includesNaoProferido ? <h4>Não proferido</h4> : <p />}
         <Cards>
           {placar
             .filter(
               votos =>
                 votos.voto === 'Não proferido' &&
+                votos.ds_orgao_julgador !== 'Gab. da Presidência no Pleno' &&
+                votos.ds_orgao_julgador !== 'Gab. da Vice-Presidência no Pleno',
+            )
+            .map(votos => (
+              <Card key={votos.id_orgao_julgador}>
+                {votos.ds_orgao_julgador}
+              </Card>
+            ))}
+        </Cards>
+
+        {includesNaoProvido ? <h4>Não provido</h4> : <p />}
+        <Cards>
+          {placar
+            .filter(
+              votos =>
+                votos.voto === 'Não provido' &&
+                votos.ds_orgao_julgador !== 'Gab. da Presidência no Pleno' &&
+                votos.ds_orgao_julgador !== 'Gab. da Vice-Presidência no Pleno',
+            )
+            .map(votos => (
+              <Card key={votos.id_orgao_julgador}>
+                {votos.ds_orgao_julgador}
+              </Card>
+            ))}
+        </Cards>
+
+        {includesOutros ? <h4>Outros</h4> : <p />}
+        <Cards>
+          {placar
+            .filter(
+              votos =>
+                votos.voto === 'Outros' &&
                 votos.ds_orgao_julgador !== 'Gab. da Presidência no Pleno' &&
                 votos.ds_orgao_julgador !== 'Gab. da Vice-Presidência no Pleno',
             )
