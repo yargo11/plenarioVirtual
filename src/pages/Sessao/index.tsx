@@ -28,6 +28,7 @@ interface IColegiados {
   id_orgao_julgador_colegiado: number;
   dt_abertura_sessao: string;
   dt_realizacao_sessao: string;
+  sala: string;
 }
 
 interface IParams {
@@ -83,7 +84,7 @@ const Sessao: React.FC = () => {
                 <h3>Fechamento da sessão</h3>
                 <h3>Tipo de sessão</h3>
               </div>
-              <div>
+              <div key={sessao.id_sessao}>
                 <h3>
                   {format(parseISO(sessao.dt_sessao), 'dd/MM/yyyy')}{' '}
                   {sessao.nr_hora_inicial}
@@ -95,6 +96,7 @@ const Sessao: React.FC = () => {
                         parseISO(sessao.dt_realizacao_sessao),
                         'dd/MM/yyyy',
                       )}`}{' '}
+                  {sessao.nr_hora_final}
                   {/* {sessao.nr_hora_final} */}
                 </h3>
                 <h3>{sessao.ds_tipo_sessao}</h3>

@@ -17,6 +17,10 @@ interface IColegiados {
   id_orgao_julgador_colegiado: number;
 }
 
+interface IResultados {
+  total: number;
+}
+
 interface IParams {
   id: string;
   year: string;
@@ -24,11 +28,13 @@ interface IParams {
 
 const Colegiado: React.FC = () => {
   const [colegiados, setColegiados] = useState<IColegiados[]>([]);
+  const [resultados, setResultados] = useState<IResultados[]>([]);
   const [selValue, setSelValue] = useState('');
   const { params } = useRouteMatch<IParams>();
 
   useEffect(() => {
     loadColegiados();
+    loadResultados();
   }, []);
 
   const loadColegiados = async () => {
@@ -39,6 +45,16 @@ const Colegiado: React.FC = () => {
     setColegiados(response.data.data.data);
   };
 
+  const loadResultados = async () => {
+    const response = await api.get(
+      `/orgaos-julgadores-colegiados/${params.id}/sessoes?ano=${params.year}&perPage=2000&page=1`,
+    );
+
+    setResultados(response.data.data.total);
+  };
+
+  // console.log(resultados);
+
   async function changeYear(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const response = await api.get(
@@ -46,6 +62,7 @@ const Colegiado: React.FC = () => {
     );
 
     setColegiados(response.data.data.data);
+    setResultados(response.data.data.total);
   }
 
   colegiados.sort((a, b) => (a.id_sessao > b.id_sessao ? -1 : 1));
@@ -92,7 +109,7 @@ const Colegiado: React.FC = () => {
         <Resultados>
           Total de Resultados
           {'  '}
-          <strong>61</strong>
+          <strong>{resultados}</strong>
         </Resultados>
 
         {colegiados

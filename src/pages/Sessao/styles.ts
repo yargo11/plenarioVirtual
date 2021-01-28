@@ -40,6 +40,20 @@ export const Table = styled.table`
   flex-direction: column;
   margin: 30px 0px;
 
+  tr {
+    display: flex;
+    th {
+      width: 22.5%;
+      padding: 10px 0px;
+      border-bottom: 2px solid #637b80;
+      /* text-align: left; */
+
+      &:first-child {
+        width: 10%;
+      }
+    }
+  }
+
   a {
     text-decoration: none;
     color: #2f6772;
@@ -52,7 +66,7 @@ export const Table = styled.table`
       margin: 5px 0px;
 
       &:first-child {
-        padding: 5px 0px;
+        /* padding: 5px 0px; */
         border-left: 5px solid #2f6772;
         box-shadow: 0 1px 1px 0 rgba(74, 74, 74, 0.15),
           0 1px 2px 1px rgba(74, 74, 74, 0.15);
@@ -61,17 +75,6 @@ export const Table = styled.table`
 
         &:hover {
           transform: translateX(10px);
-        }
-      }
-
-      th {
-        width: 22.5%;
-        padding: 10px 0px;
-        border-bottom: 2px solid #637b80;
-        /* text-align: left; */
-
-        &:first-child {
-          width: 10%;
         }
       }
     }

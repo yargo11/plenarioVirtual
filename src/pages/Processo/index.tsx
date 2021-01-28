@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useRouteMatch } from 'react-router-dom';
+import { useRouteMatch, Link } from 'react-router-dom';
 import { parseISO, format } from 'date-fns';
 import api from '../../services/api';
 
@@ -56,7 +56,7 @@ interface ISessao {
   ds_orgao_julgador_vencedor: string;
   ds_classe_judicial: string;
   ds_proclamacao_decisao: string;
-  // assunto: IProcesso;
+  // assunto: IProcesso {};
 }
 
 const Processo: React.FC = () => {
@@ -66,12 +66,22 @@ const Processo: React.FC = () => {
   const [sessoes, setSessao] = useState<ISessao[]>([]);
   const { params } = useRouteMatch<IParams>();
 
+  const processoNumber = Number(params.processo);
+
   useEffect(() => {
     loadPlacar();
     loadColegiados();
     loadProcesso();
     loadSessao();
   }, []);
+
+  const loadProcesso = async () => {
+    const response = await api.get(`/processos/${params.processo}`);
+
+    setProcesso(response.data.data.assuntos[0].ds_assunto_trf);
+  };
+
+  console.log(processo);
 
   const loadSessao = async () => {
     const response = await api.get(
@@ -80,8 +90,6 @@ const Processo: React.FC = () => {
 
     setSessao(response.data.data);
   };
-
-  // console.log(sessoes);
 
   const loadPlacar = async () => {
     const response = await api.get(
@@ -107,19 +115,12 @@ const Processo: React.FC = () => {
   const includesNaoProferido = typeVotos.includes('Não proferido');
   const includesNaoProvido = typeVotos.includes('Não provido');
   const includesOutros = typeVotos.includes('Outros');
-
-  // console.log(typeVotos);
+  const includesSuspeito = typeVotos.includes('Suspeito');
 
   const loadColegiados = async () => {
     const response = await api.get(`/sessoes/${params.sessao}`);
 
     setColegiados(response.data.data);
-  };
-
-  const loadProcesso = async () => {
-    const response = await api.get(`/processos/${params.processo}`);
-
-    setProcesso(response.data.data);
   };
 
   return (
@@ -162,7 +163,7 @@ const Processo: React.FC = () => {
         </Informacoes1>
         <h2>Informações do Processo</h2>
         {sessoes
-          .filter(sessao => sessao.id_processo_trf === 76127)
+          .filter(sessao => sessao.id_processo_trf === processoNumber)
           .map(sessao => (
             <Informacoes2 key={sessao.id_processo_trf}>
               <div>
@@ -175,7 +176,13 @@ const Processo: React.FC = () => {
               </div>
               <div>
                 <p>Consulta pública do processo</p>
-                <p>{sessao.nr_processo}</p>
+                <p>
+                  <a
+                    href={`https://pje2g.tjrn.jus.br/consultapublica/ConsultaPublica/listView.seam?numero=${sessao.nr_processo}`}
+                  >
+                    {sessao.nr_processo}
+                  </a>
+                </p>
               </div>
               <div>
                 <p>Relator</p>
@@ -192,7 +199,7 @@ const Processo: React.FC = () => {
               <div>
                 <p>Assunto</p>
 
-                <p>sadadas</p>
+                {`${processo}`}
               </div>
               <div>
                 <p>Proclamação do resultado</p>
@@ -203,7 +210,7 @@ const Processo: React.FC = () => {
 
         <h2>Placar</h2>
 
-        {includesOrdemConcedida ? <h4>Ordem Concedida (1)</h4> : <p />}
+        {includesOrdemConcedida ? <h4>Ordem Concedida</h4> : <p />}
 
         <Cards>
           {placar
@@ -301,6 +308,22 @@ const Processo: React.FC = () => {
             .filter(
               votos =>
                 votos.voto === 'Não provido' &&
+                votos.ds_orgao_julgador !== 'Gab. da Presidência no Pleno' &&
+                votos.ds_orgao_julgador !== 'Gab. da Vice-Presidência no Pleno',
+            )
+            .map(votos => (
+              <Card key={votos.id_orgao_julgador}>
+                {votos.ds_orgao_julgador}
+              </Card>
+            ))}
+        </Cards>
+
+        {includesSuspeito ? <h4>Suspeito</h4> : <p />}
+        <Cards>
+          {placar
+            .filter(
+              votos =>
+                votos.voto === 'Suspeito' &&
                 votos.ds_orgao_julgador !== 'Gab. da Presidência no Pleno' &&
                 votos.ds_orgao_julgador !== 'Gab. da Vice-Presidência no Pleno',
             )

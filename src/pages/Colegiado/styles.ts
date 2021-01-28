@@ -40,7 +40,7 @@ export const Colegio = styled.div`
   div {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-start;
 
     div {
       &:first-child {
@@ -52,6 +52,12 @@ export const Colegio = styled.div`
       h1 {
         display: flex;
         align-items: center;
+      }
+
+      @media (max-width: 600px) {
+        h1 {
+          display: block;
+        }
       }
       h4 {
         margin: 5px 0px;
@@ -76,6 +82,12 @@ export const Colegio = styled.div`
     width: 150px;
     margin-left: auto;
     padding: 10px;
+  }
+
+  @media (max-width: 600px) {
+    button {
+      width: 100%;
+    }
   }
 `;
 

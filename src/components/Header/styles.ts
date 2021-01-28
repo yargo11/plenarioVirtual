@@ -44,6 +44,12 @@ export const Plenario = styled.div`
     margin: 20px 0px;
     /* width: 100%; */
   }
+
+  @media (max-width: 600px) {
+    img {
+      width: 100%;
+    }
+  }
   p {
     max-width: 700px;
     font-style: normal;

@@ -56,6 +56,7 @@ export const Informacoes2 = styled.div`
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    align-items: center;
 
     p {
       min-width: 300px;
@@ -66,6 +67,15 @@ export const Informacoes2 = styled.div`
       & + p {
         flex: 1;
         font-weight: normal;
+      }
+
+      a {
+        text-decoration: none;
+        color: #2f6772;
+
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
   }
