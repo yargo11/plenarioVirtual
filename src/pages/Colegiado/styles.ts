@@ -73,7 +73,7 @@ export const Colegio = styled.div`
     }
   }
 
-  button {
+  a {
     display: block;
     color: #fff;
     background-color: #2f6772;
@@ -82,6 +82,14 @@ export const Colegio = styled.div`
     width: 150px;
     margin-left: auto;
     padding: 10px;
+
+    text-align: center;
+
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #265660;
+    }
   }
 
   @media (max-width: 600px) {

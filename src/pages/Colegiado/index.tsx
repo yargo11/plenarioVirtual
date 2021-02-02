@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FormEvent } from 'react';
-import { Link, useRouteMatch } from 'react-router-dom';
+import { Link, Redirect, useRouteMatch } from 'react-router-dom';
 import { parseISO, format } from 'date-fns';
 import { FiEdit, FiChevronRight, FiClock } from 'react-icons/fi';
 import api from '../../services/api';
@@ -29,7 +29,7 @@ interface IParams {
 const Colegiado: React.FC = () => {
   const [colegiados, setColegiados] = useState<IColegiados[]>([]);
   const [resultados, setResultados] = useState<IResultados[]>([]);
-  const [selValue, setSelValue] = useState('');
+  const [selValue, setSelValue] = useState('2021');
   const { params } = useRouteMatch<IParams>();
 
   useEffect(() => {
@@ -39,7 +39,7 @@ const Colegiado: React.FC = () => {
 
   const loadColegiados = async () => {
     const response = await api.get(
-      `/orgaos-julgadores-colegiados/${params.id}/sessoes?ano=${params.year}&perPage=2000&page=1`,
+      `/orgaos-julgadores-colegiados/${params.id}/sessoes?ano=${params.year}&perPage=2000`,
     );
 
     setColegiados(response.data.data.data);
@@ -47,23 +47,11 @@ const Colegiado: React.FC = () => {
 
   const loadResultados = async () => {
     const response = await api.get(
-      `/orgaos-julgadores-colegiados/${params.id}/sessoes?ano=${params.year}&perPage=2000&page=1`,
+      `/orgaos-julgadores-colegiados/${params.id}/sessoes?ano=${params.year}&perPage=2000`,
     );
 
     setResultados(response.data.data.total);
   };
-
-  // console.log(resultados);
-
-  async function changeYear(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const response = await api.get(
-      `/orgaos-julgadores-colegiados/${params.id}/sessoes?ano=${selValue}`,
-    );
-
-    setColegiados(response.data.data.data);
-    setResultados(response.data.data.total);
-  }
 
   colegiados.sort((a, b) => (a.id_sessao > b.id_sessao ? -1 : 1));
 
@@ -92,18 +80,16 @@ const Colegiado: React.FC = () => {
                 value={selValue}
                 onChange={e => setSelValue(e.target.value)}
               >
-                <option>2021</option>
-                <option>2020</option>
-                <option>2019</option>
-                <option>2018</option>
-                <option>2017</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+                <option value="2019">2019</option>
+                <option value="2018">2018</option>
+                <option value="2017">2017</option>
               </select>
             </div>
           </div>
           <hr />
-          <form onSubmit={changeYear}>
-            <button type="submit">Filtrar</button>
-          </form>
+          <a href={`/colegiados/${params.id}/${selValue}`}>Filtrar</a>
         </Colegio>
 
         <Resultados>
