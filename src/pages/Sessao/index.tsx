@@ -5,7 +5,7 @@ import api from '../../services/api';
 
 import Header from '../../components/Header';
 
-import { Breadcrumb, Colegiado, Table, TD } from './styles';
+import { Breadcrumb, Colegiado, Table, TD, Pagina } from './styles';
 
 interface ISessao {
   id_sessao_pauta_processo_trf: string;
@@ -31,23 +31,51 @@ interface IColegiados {
   sala: string;
 }
 
+interface IColegiadoByID {
+  ds_orgao_julgador_colegiado: string;
+}
+
+interface IResultados {
+  total: number;
+  next_page_url?: string | undefined;
+  prev_page_url?: string;
+  last_page: number;
+  from: number;
+  to: number;
+}
+
 interface IParams {
+  id: string;
   idSessao: string;
+  page: string;
 }
 
 const Sessao: React.FC = () => {
   const [colegiados, setColegiados] = useState<IColegiados[]>([]);
+  const [colegiadoByID, setColegiadoByID] = useState<IColegiadoByID>({
+    ds_orgao_julgador_colegiado: '',
+  });
+  const [resultados, setResultados] = useState<IResultados>({
+    total: 0,
+    next_page_url: '',
+    prev_page_url: '',
+    last_page: 0,
+    from: 0,
+    to: 0,
+  });
   const [sessoes, setSessao] = useState<ISessao[]>([]);
   const { params } = useRouteMatch<IParams>();
 
   useEffect(() => {
     loadSessao();
     loadColegiados();
+    loadColegiadoByID();
+    loadResultados();
   }, []);
 
   const loadSessao = async () => {
     const response = await api.get(
-      `/sessoes/${params.idSessao}/processos/?page=1&perPage=2000`,
+      `/sessoes/${params.idSessao}/processos/?perPage=30&page=${params.page}`,
     );
 
     setSessao(response.data.data);
@@ -59,6 +87,31 @@ const Sessao: React.FC = () => {
     setColegiados(response.data.data);
   };
 
+  const loadColegiadoByID = async () => {
+    const response = await api.get(
+      `/orgaos-julgadores-colegiados/${params.id}`,
+    );
+
+    setColegiadoByID(response.data.data);
+  };
+
+  const loadResultados = async () => {
+    const response = await api.get(
+      `/sessoes/${params.idSessao}/processos/?perPage=30&page=${params.page}`,
+    );
+
+    setResultados(response.data);
+  };
+
+  let nextPage = '';
+  if (resultados.next_page_url) {
+    nextPage = resultados.next_page_url.slice(-1);
+  }
+
+  let prevPage = '';
+  if (resultados.prev_page_url) {
+    prevPage = resultados.prev_page_url.slice(-1);
+  }
   // colegiados.sort((a, b) =>
   //   a.id_orgao_julgador_colegiado > b.id_orgao_julgador_colegiado ? 1 : -1,
   // );
@@ -67,11 +120,17 @@ const Sessao: React.FC = () => {
     <>
       <Header />
       <Breadcrumb>
-        <p>Hello Migalas.</p>
+        <p>
+          <Link to="/">Colegiados</Link> -{' '}
+          <Link to={`/colegiados/${params.id}/2021/page=1`}>
+            Sessões {colegiadoByID.ds_orgao_julgador_colegiado}
+          </Link>{' '}
+          - Lista de Processos
+        </p>
       </Breadcrumb>
 
       <Colegiado>
-        <h1>Tribunal Pleno</h1>
+        <h1>{colegiadoByID.ds_orgao_julgador_colegiado}</h1>
         <br />
         <h2>Informações da Sessão</h2>
         <br />
@@ -97,7 +156,6 @@ const Sessao: React.FC = () => {
                         'dd/MM/yyyy',
                       )}`}{' '}
                   {sessao.nr_hora_final}
-                  {/* {sessao.nr_hora_final} */}
                 </h3>
                 <h3>{sessao.ds_tipo_sessao}</h3>
               </div>
@@ -106,6 +164,26 @@ const Sessao: React.FC = () => {
         </div>
         <br />
         <h2>Lista de Processos</h2>
+        <Pagina>
+          {`${prevPage}` ? (
+            <a
+              href={`/colegiados/${params.id}/sessao/${params.idSessao}/${prevPage}`}
+            >
+              Página Anterior
+            </a>
+          ) : (
+            ''
+          )}
+          {`${nextPage}` ? (
+            <a
+              href={`/colegiados/${params.id}/sessao/${params.idSessao}/${nextPage}`}
+            >
+              Próxima Página
+            </a>
+          ) : (
+            ''
+          )}
+        </Pagina>
 
         <Table>
           <tr>
@@ -118,7 +196,7 @@ const Sessao: React.FC = () => {
           {sessoes.map(sessao => (
             <Link
               key={sessao.id_sessao_pauta_processo_trf}
-              to={`/processo/${sessao.id_sessao}/${sessao.id_processo_trf}`}
+              to={`/colegiados/${params.id}/sessao/${sessao.id_sessao}/processo/${sessao.id_processo_trf}`}
             >
               <tr>
                 <TD>{sessao.nr_ordem}</TD>

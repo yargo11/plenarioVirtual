@@ -21,7 +21,7 @@ const Home: React.FC = () => {
   }, []);
 
   const loadColegiados = async () => {
-    const response = await api.get(`/orgaos-julgadores-colegiados?perPage=20`);
+    const response = await api.get(`/orgaos-julgadores-colegiados?perPage=30`);
 
     setColegiados(response.data.data);
   };
@@ -35,7 +35,7 @@ const Home: React.FC = () => {
       <Header />
 
       <Breadcrumb>
-        <p>Hello Migalhas</p>
+        <p>Plenário Virtual</p>
       </Breadcrumb>
 
       <Colegiados>
@@ -45,7 +45,7 @@ const Home: React.FC = () => {
           .map(colegio => (
             <Link
               key={colegio.id_orgao_julgador_colegiado}
-              to={`/colegiados/${colegio.id_orgao_julgador_colegiado}/${year}`}
+              to={`/colegiados/${colegio.id_orgao_julgador_colegiado}/${year}/page=1`}
             >
               <Colegio>
                 <h3>{colegio.ds_orgao_julgador_colegiado}</h3>

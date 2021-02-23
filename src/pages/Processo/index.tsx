@@ -23,6 +23,7 @@ interface IPlacar {
 interface IParams {
   sessao: string;
   processo: string;
+  id: string;
 }
 
 interface IColegiados {
@@ -32,6 +33,10 @@ interface IColegiados {
   nr_hora_final: string;
   // id_sessao: number;
   dt_realizacao_sessao: string;
+}
+
+interface IColegiadoByID {
+  ds_orgao_julgador_colegiado: string;
 }
 
 interface IProcesso {
@@ -61,6 +66,9 @@ interface ISessao {
 
 const Processo: React.FC = () => {
   const [colegiados, setColegiados] = useState<IColegiados[]>([]);
+  const [colegiadoByID, setColegiadoByID] = useState<IColegiadoByID>({
+    ds_orgao_julgador_colegiado: '',
+  });
   const [processo, setProcesso] = useState<IProcesso[]>([]);
   const [placar, setPlacar] = useState<IPlacar[]>([]);
   const [sessoes, setSessao] = useState<ISessao[]>([]);
@@ -73,6 +81,7 @@ const Processo: React.FC = () => {
     loadColegiados();
     loadProcesso();
     loadSessao();
+    loadColegiadoByID();
   }, []);
 
   const loadProcesso = async () => {
@@ -80,8 +89,6 @@ const Processo: React.FC = () => {
 
     setProcesso(response.data.data.assuntos[0].ds_assunto_trf);
   };
-
-  console.log(processo);
 
   const loadSessao = async () => {
     const response = await api.get(
@@ -97,6 +104,14 @@ const Processo: React.FC = () => {
     );
 
     setPlacar(response.data);
+  };
+
+  const loadColegiadoByID = async () => {
+    const response = await api.get(
+      `/orgaos-julgadores-colegiados/${params.id}`,
+    );
+
+    setColegiadoByID(response.data.data);
   };
 
   const typeVotos = placar.map(placa => {
@@ -127,10 +142,19 @@ const Processo: React.FC = () => {
     <>
       <Header />
       <Breadcrumb>
-        <p>Hello Migalhas</p>
+        <p>
+          <Link to="/">Colegiados</Link> -{' '}
+          <Link to={`/colegiados/${params.id}/2021/page=1`}>
+            Sessões {colegiadoByID.ds_orgao_julgador_colegiado}
+          </Link>{' '}
+          -{' '}
+          <Link to={`/colegiados/${params.id}/sessao/${params.sessao}`}>
+            Lista de Processos
+          </Link>{' '}
+        </p>
       </Breadcrumb>
       <Colegiado>
-        <h1>Tribunal Pleno</h1>
+        <h1>{colegiadoByID.ds_orgao_julgador_colegiado}</h1>
         <h2>Informações da sessão</h2>
         <Informacoes1>
           <div>

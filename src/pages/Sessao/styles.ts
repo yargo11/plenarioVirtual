@@ -9,6 +9,41 @@ export const Breadcrumb = styled.div`
   p {
     max-width: 1140px;
     margin: 0 auto;
+
+    a {
+      padding: 4px;
+      text-decoration: none;
+      color: #fff;
+      border-bottom: 2px solid #2f6772;
+      transition: border-bottom 0.2s;
+      transition: background-color 0.2s;
+
+      &:hover {
+        border-bottom: none;
+        background: #2f6772;
+      }
+    }
+  }
+`;
+
+export const Pagina = styled.div`
+  display: flex;
+  margin-left: auto;
+  width: 200px;
+
+  a {
+    width: 200px;
+    text-decoration: none;
+    color: #2f6772;
+    border-bottom: 2px solid #2f6772;
+    padding: 5px;
+    text-align: center;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #265660;
+      color: #fff;
+    }
   }
 `;
 

@@ -9,6 +9,20 @@ export const Breadcrumb = styled.div`
   p {
     max-width: 1140px;
     margin: 0 auto;
+
+    a {
+      padding: 4px;
+      text-decoration: none;
+      color: #fff;
+      border-bottom: 2px solid #2f6772;
+      transition: border-bottom 0.2s;
+      transition: background-color 0.2s;
+
+      &:hover {
+        border-bottom: none;
+        background: #2f6772;
+      }
+    }
   }
 `;
 

@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { shade } from 'polished';
 
 export const Breadcrumb = styled.div`
   background: #637b80;
@@ -9,6 +10,20 @@ export const Breadcrumb = styled.div`
   p {
     max-width: 1140px;
     margin: 0 auto;
+
+    a {
+      padding: 4px;
+      text-decoration: none;
+      color: #fff;
+      border-bottom: 2px solid #2f6772;
+      transition: border-bottom 0.2s;
+      transition: background-color 0.2s;
+
+      &:hover {
+        border-bottom: none;
+        background: #2f6772;
+      }
+    }
   }
 `;
 
@@ -100,11 +115,37 @@ export const Colegio = styled.div`
 `;
 
 export const Resultados = styled.div`
-  background: #f8f7f7;
+  display: flex;
+  flex-direction: row;
   max-width: 1140px;
+  background: #f8f7f7;
   margin: 30px auto;
   padding: 20px;
   color: #2f6772;
+`;
+
+export const ResultadosLeft = styled.div`
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+`;
+export const ResultadosRight = styled.div`
+  margin-left: auto;
+  a {
+    color: #2f6772;
+    border-bottom: 2px solid #2f6772;
+    width: 25px;
+    padding: 5px;
+    text-align: center;
+    transition: background-color 0.3s;
+    width: 20px;
+    margin: 0px 5px;
+
+    &:hover {
+      background-color: #265660;
+      color: #fff;
+    }
+  }
 `;
 
 export const Sessao = styled.div`

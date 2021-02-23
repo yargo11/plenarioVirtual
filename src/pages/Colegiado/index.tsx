@@ -6,7 +6,15 @@ import api from '../../services/api';
 
 import Header from '../../components/Header';
 
-import { Breadcrumb, ColegiadoC, Colegio, Resultados, Sessao } from './styles';
+import {
+  Breadcrumb,
+  ColegiadoC,
+  Colegio,
+  Resultados,
+  Sessao,
+  ResultadosLeft,
+  ResultadosRight,
+} from './styles';
 
 interface IColegiados {
   ds_orgao_julgador_colegiado: string;
@@ -17,29 +25,50 @@ interface IColegiados {
   id_orgao_julgador_colegiado: number;
 }
 
+interface IColegiadoByID {
+  ds_orgao_julgador_colegiado: string;
+}
+
 interface IResultados {
   total: number;
+  next_page_url?: string | undefined;
+  prev_page_url?: string;
+  last_page: number;
+  from: number;
+  to: number;
 }
 
 interface IParams {
   id: string;
   year: string;
+  page: string;
 }
 
 const Colegiado: React.FC = () => {
   const [colegiados, setColegiados] = useState<IColegiados[]>([]);
-  const [resultados, setResultados] = useState<IResultados[]>([]);
-  const [selValue, setSelValue] = useState('2021');
+  const [colegiadoByID, setColegiadoByID] = useState<IColegiadoByID>({
+    ds_orgao_julgador_colegiado: '',
+  });
+  const [resultados, setResultados] = useState<IResultados>({
+    total: 0,
+    next_page_url: '',
+    prev_page_url: '',
+    last_page: 0,
+    from: 0,
+    to: 0,
+  });
+  const [selValue, setSelValue] = useState('');
   const { params } = useRouteMatch<IParams>();
 
   useEffect(() => {
     loadColegiados();
     loadResultados();
+    loadColegiadoByID();
   }, []);
 
   const loadColegiados = async () => {
     const response = await api.get(
-      `/orgaos-julgadores-colegiados/${params.id}/sessoes?ano=${params.year}&perPage=2000`,
+      `/orgaos-julgadores-colegiados/${params.id}/sessoes?ano=${params.year}&perPage=30&page=${params.page}`,
     );
 
     setColegiados(response.data.data.data);
@@ -47,19 +76,40 @@ const Colegiado: React.FC = () => {
 
   const loadResultados = async () => {
     const response = await api.get(
-      `/orgaos-julgadores-colegiados/${params.id}/sessoes?ano=${params.year}&perPage=2000`,
+      `/orgaos-julgadores-colegiados/${params.id}/sessoes?ano=${params.year}&perPage=30&page=${params.page}`,
     );
 
-    setResultados(response.data.data.total);
+    setResultados(response.data.data);
   };
 
-  colegiados.sort((a, b) => (a.id_sessao > b.id_sessao ? -1 : 1));
+  const loadColegiadoByID = async () => {
+    const response = await api.get(
+      `/orgaos-julgadores-colegiados/${params.id}`,
+    );
+
+    setColegiadoByID(response.data.data);
+  };
+
+  let nextPage = '';
+  if (resultados.next_page_url) {
+    nextPage = resultados.next_page_url.slice(-1);
+  }
+
+  let prevPage = '';
+  if (resultados.prev_page_url) {
+    prevPage = resultados.prev_page_url.slice(-1);
+  }
+
+  // colegiados.sort((a, b) => (a.id_sessao > b.id_sessao ? -1 : 1));
 
   return (
     <>
       <Header />
       <Breadcrumb>
-        <p>Hello Migalhas</p>
+        <p>
+          <Link to="/">Colegiados</Link> - Sessões{' '}
+          {colegiadoByID.ds_orgao_julgador_colegiado}
+        </p>
       </Breadcrumb>
 
       <ColegiadoC>
@@ -68,9 +118,9 @@ const Colegiado: React.FC = () => {
         <Colegio>
           <div>
             <div>
-              <h4>Escolher Colegiado</h4>
+              <h4>Colegiado</h4>
               <h1>
-                Tribunal Pleno
+                {colegiadoByID.ds_orgao_julgador_colegiado}
                 <FiEdit size={30} />
               </h1>
             </div>
@@ -89,18 +139,44 @@ const Colegiado: React.FC = () => {
             </div>
           </div>
           <hr />
-          <a href={`/colegiados/${params.id}/${selValue}`}>Filtrar</a>
+          <a href={`/colegiados/${params.id}/${selValue}/1`}>Filtrar</a>
         </Colegio>
 
         <Resultados>
-          Total de Resultados
-          {'  '}
-          <strong>{resultados}</strong>
+          <ResultadosLeft>
+            <p>
+              Total de Resultados: <strong> {resultados.total}</strong>
+            </p>
+            <br />
+            <p>
+              Mostrando de <strong>{resultados.from}</strong> à{' '}
+              <strong>{resultados.to}</strong>
+            </p>
+          </ResultadosLeft>
+          <ResultadosRight>
+            {`${prevPage}` ? (
+              <a href={`/colegiados/${params.id}/${params.year}/${prevPage}`}>
+                Página Anterior
+              </a>
+            ) : (
+              ''
+            )}
+            {`${nextPage}` ? (
+              <a href={`/colegiados/${params.id}/${params.year}/${nextPage}`}>
+                Próxima Página
+              </a>
+            ) : (
+              ''
+            )}
+          </ResultadosRight>
         </Resultados>
 
         {colegiados
           .map(colegios => (
-            <Link key={colegios.id_sessao} to={`/sessao/${colegios.id_sessao}`}>
+            <Link
+              key={colegios.id_sessao}
+              to={`/colegiados/${params.id}/sessao/${colegios.id_sessao}/page=1`}
+            >
               <Sessao>
                 <div>
                   <h2>{format(parseISO(colegios.dt_sessao), 'dd/MM/yyyy')}</h2>
