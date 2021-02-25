@@ -57,8 +57,8 @@ const Colegiado: React.FC = () => {
     from: 0,
     to: 0,
   });
-  const [selValue, setSelValue] = useState('');
   const { params } = useRouteMatch<IParams>();
+  const [selValue, setSelValue] = useState(params.year);
 
   useEffect(() => {
     loadColegiados();
@@ -100,7 +100,7 @@ const Colegiado: React.FC = () => {
     prevPage = resultados.prev_page_url.slice(-1);
   }
 
-  // colegiados.sort((a, b) => (a.id_sessao > b.id_sessao ? -1 : 1));
+  colegiados.sort((a, b) => (a.id_sessao > b.id_sessao ? -1 : 1));
 
   return (
     <>
@@ -121,7 +121,7 @@ const Colegiado: React.FC = () => {
               <h4>Colegiado</h4>
               <h1>
                 {colegiadoByID.ds_orgao_julgador_colegiado}
-                <FiEdit size={30} />
+                {/* <FiEdit size={30} /> */}
               </h1>
             </div>
             <div>

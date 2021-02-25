@@ -2,9 +2,13 @@ import styled from 'styled-components';
 import { shade } from 'polished';
 
 export const Breadcrumb = styled.div`
+  display: flex;
+  align-items: center;
+  line-height: 30px;
+
   background: #637b80;
   color: #fff;
-  height: 30px;
+  height: 60px;
   padding: 5px;
 
   p {

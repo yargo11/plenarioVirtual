@@ -193,20 +193,35 @@ const Sessao: React.FC = () => {
             <th>Relator</th>
             <th>Situação</th>
           </tr>
-          {sessoes.map(sessao => (
-            <Link
-              key={sessao.id_sessao_pauta_processo_trf}
-              to={`/colegiados/${params.id}/sessao/${sessao.id_sessao}/processo/${sessao.id_processo_trf}`}
-            >
-              <tr>
-                <TD>{sessao.nr_ordem}</TD>
-                <TD>{sessao.ds_classe_judicial}</TD>
-                <TD>{sessao.nr_processo}</TD>
-                <TD>{sessao.ds_orgao_julgador_relator}</TD>
-                <TD>{sessao.situacao_julgamento}</TD>
-              </tr>
-            </Link>
-          ))}
+          {sessoes.map(sessao =>
+            sessao.situacao_julgamento === 'Aguardando julgamento' ? (
+              <Link
+                key={sessao.id_sessao_pauta_processo_trf}
+                to={`/colegiados/${params.id}/sessao/${sessao.id_sessao}/processo/${sessao.id_processo_trf}`}
+              >
+                <tr>
+                  <TD>{sessao.nr_ordem}</TD>
+                  <TD>{sessao.ds_classe_judicial}</TD>
+                  <TD>{sessao.nr_processo}</TD>
+                  <TD>{sessao.ds_orgao_julgador_relator}</TD>
+                  <TD>{sessao.situacao_julgamento}</TD>
+                </tr>
+              </Link>
+            ) : (
+              <Link
+                key={sessao.id_sessao_pauta_processo_trf}
+                to={`/colegiados/${params.id}/sessao/${sessao.id_sessao}`}
+              >
+                <tr>
+                  <TD>{sessao.nr_ordem}</TD>
+                  <TD>{sessao.ds_classe_judicial}</TD>
+                  <TD>{sessao.nr_processo}</TD>
+                  <TD>{sessao.ds_orgao_julgador_relator}</TD>
+                  <TD>{sessao.situacao_julgamento}</TD>
+                </tr>
+              </Link>
+            ),
+          )}
         </Table>
       </Colegiado>
     </>

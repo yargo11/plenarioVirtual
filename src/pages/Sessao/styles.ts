@@ -1,9 +1,13 @@
 import styled from 'styled-components';
 
 export const Breadcrumb = styled.div`
+  display: flex;
+  align-items: center;
+  line-height: 30px;
+
   background: #637b80;
   color: #fff;
-  height: 30px;
+  height: 60px;
   padding: 5px;
 
   p {
@@ -57,11 +61,12 @@ export const Colegiado = styled.div`
   div {
     display: flex;
     flex-direction: row;
-    max-width: 400px;
+    max-width: 500px;
     justify-content: space-between;
 
     div {
       flex-direction: column;
+      margin-right: 10px;
       h3 {
         margin: 5px 0px;
       }
@@ -77,6 +82,8 @@ export const Table = styled.table`
 
   tr {
     display: flex;
+    overflow-wrap: anywhere;
+    text-align: center;
     th {
       width: 22.5%;
       padding: 10px 0px;
